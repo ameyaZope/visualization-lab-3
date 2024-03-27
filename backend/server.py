@@ -15,6 +15,13 @@ app.config.from_pyfile("settings.py")
 data = pd.read_csv('../data/spotify_processed_data.csv')
 numeric_column_list = ['instrumentalness_percent', 'acousticness_percent', 'danceability_percent', 'valence_percent',
                        'energy_percent', 'liveness_percent', 'speechiness_percent']
+all_columns_list = ['id',
+                    'bpm_categorical', 'key', 'mode', 'released_day', 'released_month', 'released_year_categorical',
+                    'in_apple_playlists_categorical', 'in_spotify_playlists_categorical',
+                    'danceability_percent', 'valence_percent',
+                    'energy_percent', 'acousticness_percent', 'instrumentalness_percent',
+                    'liveness_percent', 'speechiness_percent']
+
 numerical_data = data[numeric_column_list]
 # Pre Process numerical_data
 ss = StandardScaler()
@@ -58,12 +65,20 @@ distance_matrix = 1 - np.abs(numerical_data_pd.corr())
 mds_variables = MDS(n_components=n_components, metric=True,
                     dissimilarity='precomputed', random_state=None)
 mds_variables_transform_coords = mds_variables.fit_transform(distance_matrix)
-print(mds_variables_transform_coords)
-
 mds_variables_data = mds_variables_transform_coords.tolist()
-print(mds_variables_data)
 
-df_kmeans.to_csv('kmeans_points_vs_clusters.csv', index=False)
+pcp_data = []
+print(data[all_columns_list].values.tolist())
+for k in range(1, 11, 1):
+    display_data = []
+    for i, val in enumerate(kmeans_data[k-1]['km_pred']):
+        temp_data = data[all_columns_list].values[i].tolist()
+        temp_data.append(kmeans_data[k-1]['km_pred'][i])
+        display_data.append(temp_data)
+    pcp_data.append({
+        "k": k,
+        "display_data":  display_data
+    })
 
 biplot_display_data = []
 for i in range(0, len(pca_components), 1):
@@ -94,6 +109,13 @@ def get_mds_data_plot():
 def get_mds_variables_plot():
     return {
         'mds_variables_data': mds_variables_data
+    }
+
+
+@app.route("/apis/parallelCoordinatePlot/data", methods=['GET'])
+def get_parallel_coordinate_plot_data():
+    return {
+        'pcp_data': pcp_data
     }
 
 
