@@ -62,13 +62,16 @@ for k in range(1, 11, 1):
     })
 
 distance_matrix = 1 - np.abs(numerical_data_pd.corr())
+print(numerical_data_pd.columns)
 mds_variables = MDS(n_components=n_components, metric=True,
                     dissimilarity='precomputed', random_state=None)
 mds_variables_transform_coords = mds_variables.fit_transform(distance_matrix)
+print(mds_variables_transform_coords)
 mds_variables_data = mds_variables_transform_coords.tolist()
+for i,val in enumerate(mds_variables_data):
+    mds_variables_data[i].append(numerical_data_pd.columns[i])
 
 pcp_data = []
-print(data[all_columns_list].values.tolist())
 for k in range(1, 11, 1):
     display_data = []
     for i, val in enumerate(kmeans_data[k-1]['km_pred']):

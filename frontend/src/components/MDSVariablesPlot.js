@@ -34,7 +34,7 @@ function MDSVariablesPlot() {
 			.style("font-size", "20px")
 			.style("text-decoration", "underline")
 			.style("font", "bold 16px Comic Sans MS")
-			.text(`MDS Data Plot`);
+			.text(`MDS Variables Plot`);
 
 		d3.json('/apis/mds/variablesPlot').then((data) => {
 			var minX = 1000000, maxX = -1000000;
@@ -133,6 +133,22 @@ function MDSVariablesPlot() {
 				.duration(2000)
 				.attr("cx", function (d) { return x(d[0]); })
 				.attr("cy", function (d) { return y(d[1]); })
+
+			svg.append('g')
+				.selectAll("text.dot_label")
+				.data(data['mds_variables_data'])
+				.enter()
+				.append("text")
+				.attr("x", function (d) {
+					return x(d[0]);
+				})
+				.attr("y", function (d) {
+					return y(d[1]) - 10;
+				})
+				.style("font", "12px Comic Sans MS")
+				.text(function (d) {
+					return d[2]
+				});
 		})
 
 	}, []);
