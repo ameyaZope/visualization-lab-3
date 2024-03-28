@@ -3,6 +3,8 @@ import { useEffect, useRef } from "react";
 
 function ParallelCoordinatePlot({ numClusters }) {
 	const pcpSvgRef = useRef();
+	const brushSelections = {}; // Object to store selections for each dimension
+
 
 	useEffect(() => {
 		const margin = { top: 70, right: 120, bottom: 50, left: 90 },
@@ -137,25 +139,30 @@ function ParallelCoordinatePlot({ numClusters }) {
 			// Create a brush for each axis
 			dimensions.forEach(dim => {
 				function brushed(event, dim) {
-					if (!event.selection) return; // Exit if no selection
-					if (!isCategorical[dim]) {
-						const [y1, y0] = event.selection.map(y[dim].invert, y[dim]);
-						svg.selectAll("path.line")
-						.style("stroke-opacity", d => {
-							return d[dim] >= y0 && d[dim] <= y1 ? 1 : 0.1; // Higher opacity inside, lower outside
-						});
-					}
-					else {
-						// Calculate positions of categorical ticks
-						const positions = y[dim].domain().map(d => y[dim](d));
-
-						svg.selectAll("path.line")
-								.style("stroke-opacity", d => {
+					if (!event.selection) {
+						brushSelections[dim] = null; // Clear selection for this dimension
+					} else {
+						if (!isCategorical[dim]) {
+							const [y1, y0] = event.selection.map(y[dim].invert, y[dim]);
+							brushSelections[dim] = d => d[dim] >= y0 && d[dim] <= y1;
+						} else {
+							// Handle categorical dimension
+							const positions = y[dim].domain().map(d => y[dim](d));
+							brushSelections[dim] = d => {
 										const position = y[dim](d[dim]);
-										// Check if the position of the categorical value is within the brush selection
-										return (position >= event.selection[0] && position <= event.selection[1]) ? 1 : 0.1;
-								});
+								return position >= event.selection[0] && position <= event.selection[1];
+							};
+						}
 					}
+
+					// Apply global filtering logic
+					svg.selectAll("path.line").style("stroke-opacity", d => {
+						// Check every dimension's selection to decide if the line should be highlighted
+						return Object.keys(brushSelections).every(dim => {
+							const test = brushSelections[dim];
+							return test ? test(d) : true; // If no selection for a dimension, consider it as passing the test
+						}) ? 1 : 0.1;
+					});
 
 				}
 
@@ -163,6 +170,11 @@ function ParallelCoordinatePlot({ numClusters }) {
 					if (!event.selection) {
 						svg.selectAll("path.line")
 							.style("stroke-opacity", 0.5);
+					}
+
+					if (!event.selection) {
+						delete brushSelections[dim]; // Remove the selection for this dimension
+						// You might want to reapply the global filtering here as well
 					}
 				}
 
