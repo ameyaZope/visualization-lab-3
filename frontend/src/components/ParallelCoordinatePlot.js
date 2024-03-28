@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import { useEffect, useRef } from "react";
 
-function ParallelCoordinatePlot({ numClusters }) {
+function ParallelCoordinatePlot({ numClusters, chosenDimensions }) {
 	const pcpSvgRef = useRef();
 	const brushSelections = {}; // Object to store selections for each dimension
 
@@ -11,12 +11,26 @@ function ParallelCoordinatePlot({ numClusters }) {
 			width = 1400 - margin.left - margin.right,
 			height = 300 - margin.top - margin.bottom;
 
-		let dimensions = [
+		let all_dimensions = [
 			'bpm_categorical', 'key', 'mode', 'released_day', 'released_month', 'released_year_categorical',
 			'in_apple_playlists_categorical', 'in_spotify_playlists_categorical',
 			'danceability_percent', 'valence_percent',
 			'energy_percent', 'acousticness_percent', 'instrumentalness_percent',
 			'liveness_percent', 'speechiness_percent'];
+
+		let numerical_dimensions = [
+			'bpm_categorical', 'key', 'mode', 'released_day', 'released_month', 'released_year_categorical',
+			'in_apple_playlists_categorical', 'in_spotify_playlists_categorical'];
+
+		let dimensions = [];
+		for (let i = 0; i < numerical_dimensions.length; i++) {
+			dimensions.push(numerical_dimensions[i]);
+		}
+		for (let i = 0; i < chosenDimensions.length; i++) {
+			console.log(`Adding ${chosenDimensions[i]}`)
+			dimensions.push(chosenDimensions[i]);
+		}
+		console.log(`dimensions_list is ${dimensions}`)
 
 		let isCategorical = {
 			'bpm_categorical': true,
@@ -36,6 +50,8 @@ function ParallelCoordinatePlot({ numClusters }) {
 			'speechiness_percent': false
 		}
 
+		// below line clears the svg so that next graph can be drawn on it, 
+		// else there is overlap of graphs
 		var svgSelected = d3.select("#pcpPlot");
 		svgSelected.selectAll("*").remove();
 
@@ -189,7 +205,7 @@ function ParallelCoordinatePlot({ numClusters }) {
 					.call(brush);
 			});
 		});
-	}, [numClusters]); // Make sure to include numClusters in the dependency array if it's a prop
+	}, [numClusters, chosenDimensions]);
 
 	return <svg width={1400} height={300} id='pcpPlot' ref={pcpSvgRef}></svg>;
 }

@@ -2,7 +2,7 @@ import * as d3 from "d3";
 import { useEffect, useRef } from "react";
 
 
-function MDSVariablesPlot() {
+function MDSVariablesPlot({ chosenDimensions, handleChosenDimensionsChange }) {
 	const mdsVariablesPlotSvgRef = useRef();
 
 	useEffect(() => {
@@ -124,7 +124,62 @@ function MDSVariablesPlot() {
 				})
 				.on('mouseout', function (event, d) {
 					tooltip.html(``).style('visibility', 'hidden');
+					for (let i = 0; i < chosenDimensions.length; i++) {
+						if (d[2] === chosenDimensions[i]) {
+							d3.select(this).style('fill', 'crimson');
+							return;
+						}
+					}
 					d3.select(this).transition().style('fill', "steelblue"); // Use the original fill color
+				})
+				.on('click', function (event, d) {
+					if (chosenDimensions.length >= 1) {
+						let prevX = -1;
+						let prevY = -1;
+						let mds_variables_data = data['mds_variables_data']
+						for (let i = 0; i < mds_variables_data.length; i++) {
+							if (mds_variables_data[i][2] == chosenDimensions[chosenDimensions.length - 1]) {
+								prevX = mds_variables_data[i][0];
+								prevY = mds_variables_data[i][1];
+							}
+						}
+						let currX = -1;
+						let currY = -1;
+						for (let i = 0; i < mds_variables_data.length; i++) {
+							if (mds_variables_data[i][2] == d[2]) {
+								currX = mds_variables_data[i][0];
+								currY = mds_variables_data[i][1];
+							}
+						}
+						console.log(`line = ${prevX} ${prevY} ${currX} ${currY}`)
+						// Define the line generator
+						var line = d3.line()
+							.x(function (d) { return x(d[0]); })
+							.y(function (d) { return y(d[1]); });
+						// Append the path to the SVG
+						svg.append(`path`)
+							.attr('class', `path_${chosenDimensions.length}`)
+							.datum([[prevX, prevY], [currX, currY]]) // Array of two points
+							.attr("stroke", "black") // or any other color
+							.attr("stroke-width", 2)
+							.attr("d", line);
+					}
+					for (let i = 0; i < chosenDimensions.length; i++) {
+						if (d[2] === chosenDimensions[i]) {
+							chosenDimensions.splice(i, 1);
+							handleChosenDimensionsChange([...chosenDimensions])
+							d3.select(this).style('fill', 'steelblue');
+							if (chosenDimensions.length >= 1) {
+								d3.select(`.path_${chosenDimensions.length}`).remove()
+							}
+							return;
+						}
+					}
+					console.log(d)
+					let temp = [...chosenDimensions, d[2]]
+					chosenDimensions.push(d[2])
+					handleChosenDimensionsChange(temp)
+					d3.select(this).style('fill', 'crimson');
 				})
 
 			svg.selectAll("circle")
@@ -150,7 +205,6 @@ function MDSVariablesPlot() {
 					return d[2]
 				});
 		})
-
 	}, []);
 
 	return (
