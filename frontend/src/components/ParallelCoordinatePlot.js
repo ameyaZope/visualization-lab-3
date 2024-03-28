@@ -161,7 +161,7 @@ function ParallelCoordinatePlot({ numClusters }) {
 						return Object.keys(brushSelections).every(dim => {
 							const test = brushSelections[dim];
 							return test ? test(d) : true; // If no selection for a dimension, consider it as passing the test
-						}) ? 1 : 0.1;
+						}) ? 1 : 0.05;
 					});
 
 				}
