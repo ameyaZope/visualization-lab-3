@@ -73,8 +73,25 @@ for k in range(1, 11, 1):
     display_data = []
     for i, val in enumerate(kmeans_data[k-1]['km_pred']):
         temp_data = data[all_columns_list].values[i].tolist()
-        temp_data.append(kmeans_data[k-1]['km_pred'][i])
-        display_data.append(temp_data)
+        display_data.append({
+            'id': temp_data[0],
+            'bpm_categorical' : temp_data[1], 
+            'key' : temp_data[2],
+            'mode' : temp_data[3],
+            'released_day' : temp_data[4],
+            'released_month' : temp_data[5], 
+            'released_year_categorical':  temp_data[6],
+            'in_apple_playlists_categorical' : temp_data[7],
+            'in_spotify_playlists_categorical' : temp_data[8],
+            'danceability_percent' : temp_data[9], 
+            'valence_percent' : temp_data[10],
+            'energy_percent' : temp_data[11],
+            'acousticness_percent' : temp_data[12],
+            'instrumentalness_percent' : temp_data[13],
+            'liveness_percent' : temp_data[14], 
+            'speechiness_percent' : temp_data[15],
+            'cluster': kmeans_data[k-1]['km_pred'][i]
+        })
     pcp_data.append({
         "k": k,
         "display_data":  display_data
