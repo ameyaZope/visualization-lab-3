@@ -16,6 +16,24 @@ function ParallelCoordinatePlot({ numClusters }) {
 			'energy_percent', 'acousticness_percent', 'instrumentalness_percent',
 			'liveness_percent', 'speechiness_percent'];
 
+		let isCategorical = {
+			'bpm_categorical': true,
+			'key': true,
+			'mode': true,
+			'released_day': true,
+			'released_month': true,
+			'released_year_categorical': true,
+			'in_apple_playlists_categorical': true,
+			'in_spotify_playlists_categorical': true,
+			'danceability_percent': false,
+			'valence_percent': false,
+			'energy_percent': false,
+			'acousticness_percent': false,
+			'instrumentalness_percent': false,
+			'liveness_percent': false,
+			'speechiness_percent': false
+		}
+
 		var svgSelected = d3.select("#pcpPlot");
 		svgSelected.selectAll("*").remove();
 
@@ -89,7 +107,7 @@ function ParallelCoordinatePlot({ numClusters }) {
 					.attr("d", path)
 					.style("fill", "none")
 					.style("stroke", d => color(d['cluster']))
-					.style("opacity", 0.5);
+				.style("opacity", 0.5);
 
 			// Draw the axis and apply drag behavior
 			svg.selectAll(".axis")
@@ -115,6 +133,49 @@ function ParallelCoordinatePlot({ numClusters }) {
 				.style("text-decoration", "underline")
 				.style("font", "bold 16px Comic Sans MS")
 				.text(`Parallel Coordinate Plot`);
+
+			// Create a brush for each axis
+			dimensions.forEach(dim => {
+				function brushed(event, dim) {
+					if (!event.selection) return; // Exit if no selection
+					if (!isCategorical[dim]) {
+						const [y1, y0] = event.selection.map(y[dim].invert, y[dim]);
+						svg.selectAll("path.line")
+						.style("stroke-opacity", d => {
+							return d[dim] >= y0 && d[dim] <= y1 ? 1 : 0.1; // Higher opacity inside, lower outside
+						});
+					}
+					else {
+						// Calculate positions of categorical ticks
+						const positions = y[dim].domain().map(d => y[dim](d));
+
+						svg.selectAll("path.line")
+								.style("stroke-opacity", d => {
+										const position = y[dim](d[dim]);
+										// Check if the position of the categorical value is within the brush selection
+										return (position >= event.selection[0] && position <= event.selection[1]) ? 1 : 0.1;
+								});
+					}
+
+				}
+
+				function brushended(event) {
+					if (!event.selection) {
+						svg.selectAll("path.line")
+							.style("stroke-opacity", 0.5);
+					}
+				}
+
+				const brush = d3.brushY()
+					.extent([[-10, 0], [10, height]])
+					.on("brush", event => brushed(event, dim)) // Pass the current dimension
+					.on("end", brushended);
+
+				svg.append("g")
+					.attr("class", "brush")
+					.attr("transform", `translate(${x(dim)})`)
+					.call(brush);
+			});
 		});
 	}, [numClusters]); // Make sure to include numClusters in the dependency array if it's a prop
 
