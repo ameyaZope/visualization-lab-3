@@ -102,9 +102,19 @@ function ParallelCoordinatePlot({ numClusters }) {
 					.append("text")
 					.style("text-anchor", "middle")
 					.attr("y", -9)
-				.attr("transform", "translate(0,-20)")
+				.attr("transform", "translate(-10,0)rotate(-15)")
+				.style("text-anchor", "start")
 				.text(d => d)
 				.style("fill", "black");
+
+			svg.append("text")
+				.attr("x", width / 2)
+				.attr("y", 0 - (margin.top / 2))
+				.attr("text-anchor", "middle")
+				.style("font-size", "20px")
+				.style("text-decoration", "underline")
+				.style("font", "bold 16px Comic Sans MS")
+				.text(`Parallel Coordinate Plot`);
 		});
 	}, [numClusters]); // Make sure to include numClusters in the dependency array if it's a prop
 
