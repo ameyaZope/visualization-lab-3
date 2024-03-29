@@ -115,6 +115,60 @@ function ParallelCoordinatePlot({ numClusters, chosenDimensions }) {
 									svg.selectAll("path.line")
 									.attr("d", path); // Recalculate the line paths
 							}
+				})
+				.on('end', function (event, d) {
+					// Create a brush for each axis
+					dimensions.forEach(dim => {
+						function brushed(event, dim) {
+							if (!event.selection) {
+								brushSelections[dim] = null; // Clear selection for this dimension
+							} else {
+								if (!isCategorical[dim]) {
+									const [y1, y0] = event.selection.map(y[dim].invert, y[dim]);
+									brushSelections[dim] = d => d[dim] >= y0 && d[dim] <= y1;
+								} else {
+									// Handle categorical dimension
+									const positions = y[dim].domain().map(d => y[dim](d));
+									brushSelections[dim] = d => {
+										const position = y[dim](d[dim]);
+										return position >= event.selection[0] && position <= event.selection[1];
+									};
+								}
+							}
+
+							// Apply global filtering logic
+							svg.selectAll("path.line").style("stroke-opacity", d => {
+								// Check every dimension's selection to decide if the line should be highlighted
+								return Object.keys(brushSelections).every(dim => {
+									const test = brushSelections[dim];
+									return test ? test(d) : true; // If no selection for a dimension, consider it as passing the test
+								}) ? 1 : 0.05;
+							});
+
+						}
+
+						function brushended(event) {
+							if (!event.selection) {
+								svg.selectAll("path.line")
+									.style("stroke-opacity", 0.5);
+							}
+
+							if (!event.selection) {
+								delete brushSelections[dim]; // Remove the selection for this dimension
+								// You might want to reapply the global filtering here as well
+							}
+						}
+
+						const brush = d3.brushY()
+							.extent([[-10, 0], [10, height]])
+							.on("brush", event => brushed(event, dim)) // Pass the current dimension
+							.on("end", brushended);
+
+						svg.append("g")
+							.attr("class", "brush")
+							.attr("transform", `translate(${x(dim)})`)
+							.call(brush);
+					});
 					});
 
 			// Draw the lines
@@ -141,7 +195,8 @@ function ParallelCoordinatePlot({ numClusters, chosenDimensions }) {
 				.attr("transform", "translate(-10,0)rotate(-10)")
 				.style("text-anchor", "start")
 				.text(d => d)
-				.style("fill", "black");
+				.style("fill", "black")
+				.style("cursor", "all-scroll");;
 
 			svg.append("text")
 				.attr("x", width / 2)
