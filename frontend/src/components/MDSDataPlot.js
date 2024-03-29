@@ -7,7 +7,7 @@ function MDSDataPlot({ numClusters, handleNumClusterChange }) {
 
 	useEffect(() => {
 		// set the dimensions and margins of the graph
-		const margin = { top: 30, right: 120, bottom: 50, left: 90 },
+		const margin = { top: 30, right: 120, bottom: 100, left: 50 },
 			width = 500 - margin.left - margin.right,
 			height = 300 - margin.top - margin.bottom;
 
@@ -37,13 +37,13 @@ function MDSDataPlot({ numClusters, handleNumClusterChange }) {
 			.text(`MDS Data Plot`);
 
 		d3.json('/apis/mds/dataPlot').then((data) => {
-			var minX = 1000000, maxX = -1000000;
-			for (let i = 0; i < data['mds_data'].length; i++) {
-				minX = Math.min(minX, data['mds_data'][numClusters - 1]['display_data'][i][0])
-				maxX = Math.max(maxX, data['mds_data'][numClusters - 1]['display_data'][i][0])
-			}
+			var minX = d3.min(data['mds_data'][numClusters - 1]['display_data'], d => d[0]),
+				maxX = d3.max(data['mds_data'][numClusters - 1]['display_data'], d => d[0]),
+				minY = d3.min(data['mds_data'][numClusters - 1]['display_data'], d => d[1]),
+				maxY = d3.max(data['mds_data'][numClusters - 1]['display_data'], d => d[1]);
+
 			const x = d3.scaleLinear()
-				.domain([minX * 2, maxX * 2])
+					.domain([minX, maxX])
 				.range([0, width])
 
 			const xAxis = svg.append('g')
@@ -54,18 +54,13 @@ function MDSDataPlot({ numClusters, handleNumClusterChange }) {
 				.style("text-anchor", "end");
 
 			svg.append("text")
-				.attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
+				.attr("transform", `translate(${width / 2}, ${height + margin.bottom / 2 - 10})`)
 				.style("text-anchor", "middle")
 				.style("font", "bold 16px Comic Sans MS")
 				.text(`MDS Dimension 1`);
 
-			var minY = 1000000, maxY = -1000000;
-			for (let i = 0; i < data['mds_data'].length; i++) {
-				minY = Math.min(minY, data['mds_data'][numClusters - 1]['display_data'][i][1])
-				maxY = Math.max(maxY, data['mds_data'][numClusters - 1]['display_data'][i][1])
-			}
 			const y = d3.scaleLinear()
-				.domain([minY * 2, maxY * 2])
+				.domain([minY, maxY])
 				.range([height, 0])
 			const yAxis = svg.append('g')
 				.transition()

@@ -19,6 +19,7 @@ function MDSPlotCombined({ numClusters, handleNumClusterChange, chosenDimensions
 					value={currPlot}
 					name="radio-buttons-group"
 					onChange={handleCurrPlotChange}
+					style={{ marginLeft: '230px', }}
 				>
 					<FormControlLabel value="mds_data_plot" control={<Radio />} label="Data Plot" />
 					<FormControlLabel value="mds_variables_plot" control={<Radio />} label="Variables Plot" />
