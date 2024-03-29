@@ -23,8 +23,11 @@ function ParallelCoordinatePlot({ numClusters, chosenDimensions }) {
 			'in_apple_playlists_categorical', 'in_spotify_playlists_categorical'];
 
 		let dimensions = [];
-		for (let i = 0; i < numerical_dimensions.length; i++) {
-			dimensions.push(numerical_dimensions[i]);
+		for (let i = 0; i < all_dimensions.length; i++) {
+			dimensions.push(all_dimensions[i]);
+		}
+		if (chosenDimensions.length != 0) {
+			dimensions = []
 		}
 		for (let i = 0; i < chosenDimensions.length; i++) {
 			dimensions.push(chosenDimensions[i]);
@@ -67,14 +70,14 @@ function ParallelCoordinatePlot({ numClusters, chosenDimensions }) {
 
 			var y = {};
 			dimensions.forEach((dim, i) => {
-				if (i <= 7) {
+				if (isCategorical[dim]) {
 					let uniqueValues = [...new Set(data['pcp_data'][numClusters - 1]['display_data'].map(d => d[dim]))];
 					y[dim] = d3.scalePoint()
 						.domain(uniqueValues)
 						.range([height, 0]);
 					} else {
 						y[dim] = d3.scaleLinear()
-							.domain(d3.extent(data['pcp_data'][numClusters - 1]['display_data'], d => d[dim]))
+							.domain([0, 100])
 							.range([height, 0]);
 					}
 				});
