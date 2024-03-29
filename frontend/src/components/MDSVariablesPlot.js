@@ -93,6 +93,43 @@ function MDSVariablesPlot({ chosenDimensions, handleChosenDimensionsChange }) {
 				.style('color', '#fff')
 				.text('a simple tooltip');
 
+			for (let j = 1; j < chosenDimensions.length; j++) {
+				let mds_variables_data = data['mds_variables_data']
+
+				let prevX = -1;
+				let prevY = -1;
+				let currX = -1;
+				let currY = -1;
+				for (let i = 0; i < mds_variables_data.length; i++) {
+					if (mds_variables_data[i][2] == chosenDimensions[j - 1]) {
+						prevX = mds_variables_data[i][0]
+						prevY = mds_variables_data[i][1]
+					}
+
+					if (mds_variables_data[i][2] == chosenDimensions[j]) {
+						currX = mds_variables_data[i][0]
+						currY = mds_variables_data[i][1]
+					}
+				}
+
+				console.log(`line = ${prevX} ${prevY} ${currX} ${currY} chosenDimensions=${chosenDimensions}`)
+				if (currX != -1 && prevX != -1) {
+					// Define the line generator
+					var line = d3.line()
+						.x(function (d) { return x(d[0]); })
+						.y(function (d) { return y(d[1]); });
+
+					// Append the path to the SVG
+					svg.append(`path`)
+						.attr('class', `path_${chosenDimensions.length}`)
+						.datum([[prevX, prevY], [currX, currY]]) // Array of two points
+						.attr("stroke", "black") // or any other color
+						.attr("stroke-width", 2)
+						.attr("d", line)
+				}
+
+			}
+
 			// Add dots
 			svg.append('g')
 				.selectAll("dot")
@@ -107,6 +144,11 @@ function MDSVariablesPlot({ chosenDimensions, handleChosenDimensionsChange }) {
 				})
 				.attr("r", 5)
 				.attr("fill", function (d) {
+					for (let i = 0; i < chosenDimensions.length; i++) {
+						if (d[2] == chosenDimensions[i]) {
+							return "crimson"
+						}
+					}
 					return "steelblue"
 				})
 				.on('mouseover', function (event, data) {
@@ -175,7 +217,6 @@ function MDSVariablesPlot({ chosenDimensions, handleChosenDimensionsChange }) {
 							return;
 						}
 					}
-					console.log(d)
 					let temp = [...chosenDimensions, d[2]]
 					chosenDimensions.push(d[2])
 					handleChosenDimensionsChange(temp)

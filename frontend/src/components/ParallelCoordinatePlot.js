@@ -7,7 +7,7 @@ function ParallelCoordinatePlot({ numClusters, chosenDimensions }) {
 
 
 	useEffect(() => {
-		const margin = { top: 70, right: 10, bottom: 50, left: 50 },
+		const margin = { top: 80, right: 10, bottom: 50, left: 50 },
 			width = 1000 - margin.left - margin.right,
 			height = 300 - margin.top - margin.bottom;
 
@@ -27,10 +27,8 @@ function ParallelCoordinatePlot({ numClusters, chosenDimensions }) {
 			dimensions.push(numerical_dimensions[i]);
 		}
 		for (let i = 0; i < chosenDimensions.length; i++) {
-			console.log(`Adding ${chosenDimensions[i]}`)
 			dimensions.push(chosenDimensions[i]);
 		}
-		console.log(`dimensions_list is ${dimensions}`)
 
 		let isCategorical = {
 			'bpm_categorical': true,
@@ -103,7 +101,6 @@ function ParallelCoordinatePlot({ numClusters, chosenDimensions }) {
 						if (newPositionIndex !== currentIndex) {
 							dimensions.splice(currentIndex, 1);
 							dimensions.splice(newPositionIndex, 0, d);
-							console.log(dimensions)
 
 								x.domain(dimensions);
 								svg.selectAll(".axis")
@@ -138,7 +135,7 @@ function ParallelCoordinatePlot({ numClusters, chosenDimensions }) {
 					.append("text")
 					.style("text-anchor", "middle")
 					.attr("y", -9)
-				.attr("transform", "translate(-10,0)rotate(-15)")
+				.attr("transform", "translate(-10,0)rotate(-10)")
 				.style("text-anchor", "start")
 				.text(d => d)
 				.style("fill", "black");
