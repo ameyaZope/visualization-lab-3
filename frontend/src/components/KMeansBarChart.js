@@ -6,8 +6,8 @@ function KMeansBarChart({ numClusters, handleNumClusterChange }) {
 
 	useEffect(() => {
 		// set the dimensions and margins of the graph
-		const margin = { top: 30, right: 30, bottom: 50, left: 90 },
-			width = 500 - margin.left - margin.right,
+		const margin = { top: 80, right: 30, bottom: 50, left: 90 },
+			width = 400 - margin.left - margin.right,
 			height = 300 - margin.top - margin.bottom;
 
 		// below line clears the svg so that next graph can be drawn on it, 
@@ -148,7 +148,7 @@ function KMeansBarChart({ numClusters, handleNumClusterChange }) {
 	}, [numClusters])
 
 	return (
-		<svg width={600} height={300} id='screePlot' ref={kMeansBarChartSvgRef} />
+		<svg width={400} height={300} id='screePlot' ref={kMeansBarChartSvgRef} />
 	)
 }
 

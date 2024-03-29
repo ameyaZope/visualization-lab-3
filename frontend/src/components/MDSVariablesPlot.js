@@ -7,7 +7,7 @@ function MDSVariablesPlot({ chosenDimensions, handleChosenDimensionsChange }) {
 
 	useEffect(() => {
 		// set the dimensions and margins of the graph
-		const margin = { top: 30, right: 120, bottom: 50, left: 90 },
+		const margin = { top: 30, right: 120, bottom: 50, left: 50 },
 			width = 500 - margin.left - margin.right,
 			height = 300 - margin.top - margin.bottom;
 
@@ -208,7 +208,7 @@ function MDSVariablesPlot({ chosenDimensions, handleChosenDimensionsChange }) {
 	}, []);
 
 	return (
-		<svg width={700} height={300} id='mdsVariablesPlot' ref={mdsVariablesPlotSvgRef} />
+		<svg width={500} height={300} id='mdsVariablesPlot' ref={mdsVariablesPlotSvgRef} />
 	)
 }
 

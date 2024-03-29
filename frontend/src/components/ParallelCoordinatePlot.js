@@ -7,8 +7,8 @@ function ParallelCoordinatePlot({ numClusters, chosenDimensions }) {
 
 
 	useEffect(() => {
-		const margin = { top: 70, right: 120, bottom: 50, left: 90 },
-			width = 1400 - margin.left - margin.right,
+		const margin = { top: 70, right: 10, bottom: 50, left: 50 },
+			width = 1000 - margin.left - margin.right,
 			height = 300 - margin.top - margin.bottom;
 
 		let all_dimensions = [
@@ -207,7 +207,7 @@ function ParallelCoordinatePlot({ numClusters, chosenDimensions }) {
 		});
 	}, [numClusters, chosenDimensions]);
 
-	return <svg width={1400} height={300} id='pcpPlot' ref={pcpSvgRef}></svg>;
+	return <svg width={1000} height={300} id='pcpPlot' ref={pcpSvgRef}></svg>;
 }
 
 export default ParallelCoordinatePlot;

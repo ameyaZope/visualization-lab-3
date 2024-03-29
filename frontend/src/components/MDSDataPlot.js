@@ -174,7 +174,7 @@ function MDSDataPlot({ numClusters, handleNumClusterChange }) {
 	}, [numClusters]);
 
 	return (
-		<svg width={700} height={300} id='mdsDataPlot' ref={mdsDataPlotSvgRef} />
+		<svg width={500} height={300} id='mdsDataPlot' ref={mdsDataPlotSvgRef} />
 	)
 }
 

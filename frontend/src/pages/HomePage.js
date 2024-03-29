@@ -1,8 +1,7 @@
 import { Container, Grid } from "@mui/material";
 import * as React from 'react';
 import KMeansBarChart from "../components/KMeansBarChart";
-import MDSDataPlot from "../components/MDSDataPlot";
-import MDSVariablesPlot from "../components/MDSVariablesPlot";
+import MDSPlotCombined from "../components/MDSPlotsCombined";
 import ParallelCoordinatePlot from "../components/ParallelCoordinatePlot";
 
 function HomePage() {
@@ -22,16 +21,13 @@ function HomePage() {
 		<>
 			<Container>
 				<Grid container spacing={2}>
-					<Grid item xs={6} style={{ height: '300px', width: '400px' }}> {/* Adjust height as needed */}
+					<Grid item xs={4.5} style={{ height: '46vh', width: '30vw' }}> {/* Adjust height and width as needed */}
 						<KMeansBarChart numClusters={numClusters} handleNumClusterChange={handleNumClusterChange} />
 					</Grid>
-					<Grid item xs={6} style={{ height: '300px', width: '400px' }}> {/* Adjust height as needed */}
-						<MDSDataPlot numClusters={numClusters} handleNumClusterChange={handleNumClusterChange} />
+					<Grid item xs={6} style={{ height: '46vh', width: '60vw' }}> {/* Adjust height and width as needed */}
+						<MDSPlotCombined numClusters={numClusters} chosenDimensions={chosenDimensions} handleChosenDimensionsChange={handleChosenDimensionsChange} />
 					</Grid>
-					<Grid item xs={6} style={{ height: '300px', width: '400px' }}> {/* Adjust height as needed */}
-						<MDSVariablesPlot chosenDimensions={chosenDimensions} handleChosenDimensionsChange={handleChosenDimensionsChange} />
-					</Grid>
-					<Grid item xs={12} style={{ height: '300px', width: '1400px' }}> {/* Adjust height as needed */}
+					<Grid item xs={12} style={{ height: '50vh', width: '100vw' }}> {/* Adjust height and width as needed */}
 						<ParallelCoordinatePlot numClusters={numClusters} chosenDimensions={chosenDimensions} />
 					</Grid>
 				</Grid>
