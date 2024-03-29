@@ -240,7 +240,7 @@ function ParallelCoordinatePlot({ numClusters, chosenDimensions }) {
 				function brushended(event) {
 					if (!event.selection) {
 						svg.selectAll("path.line")
-							.style("stroke-opacity", 0.5);
+							.style("stroke-opacity", 1);
 					}
 
 					if (!event.selection) {
