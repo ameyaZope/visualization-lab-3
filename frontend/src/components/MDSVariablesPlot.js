@@ -121,7 +121,7 @@ function MDSVariablesPlot({ chosenDimensions, handleChosenDimensionsChange }) {
 
 					// Append the path to the SVG
 					svg.append(`path`)
-						.attr('class', `path_${chosenDimensions.length}`)
+						.attr('class', `path_${j}`)
 						.datum([[prevX, prevY], [currX, currY]]) // Array of two points
 						.attr("stroke", "black") // or any other color
 						.attr("stroke-width", 2)
