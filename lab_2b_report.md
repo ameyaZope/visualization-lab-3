@@ -1,7 +1,7 @@
 ---
-title: "Lab 1: Report"
+title: "Lab 2b: Report"
 author: "Ameya Zope"
-date: "Feb 15, 2024"
+date: "March 27, 2024"
 output: 
   pdf_document
 header-includes:
@@ -67,7 +67,7 @@ acousticness_percent and energy_percent are quite close on the plot, suggesting 
 
 #### Detecting clusters of features
 
-Some variables in my dataset form loose clusters that they may share some similar properties or are influenced by similar factors. For example, valence_percent, danceability_percent, and speechiness_percent form a cluster at the bottom center of the plot. This could mean tracks that are more danceable also tend to have more spoken words and convey a happier mood (higher valence). It may reflect a genre-specific trend like pop music, where catchy and lyrically dense songs tend to be both danceable and have a higher valence. This narrative does make sense because we dont tend to dance too much on sad songs.  
+Some variables in my dataset form loose clusters that they may share some similar properties or are influenced by similar factors. 
 
 #### Detecting Independence of Features
 instrumentalness_percent is slightly isolated and does not cluster tightly with any other variable. This could potentially mean that instrumentalness_percent does not strongly correlate with any of the other measured attributes and consequently might have a unique characteristic independent of other attributes. Again this is a fairly loose observation because in my MDS plot the points are almost equidistant. 

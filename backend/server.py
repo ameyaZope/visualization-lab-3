@@ -7,7 +7,7 @@ from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 from sklearn.manifold import MDS
 
-np.random.seed()
+np.random.seed(0)
 
 app = Flask(__name__)
 app.config.from_pyfile("settings.py")
@@ -64,7 +64,7 @@ for k in range(1, 11, 1):
 distance_matrix = 1 - np.abs(numerical_data_pd.corr())
 print(numerical_data_pd.columns)
 mds_variables = MDS(n_components=n_components, metric=True,
-                    dissimilarity='precomputed', random_state=None)
+                    dissimilarity='precomputed', random_state=44)
 mds_variables_transform_coords = mds_variables.fit_transform(distance_matrix)
 print(mds_variables_transform_coords)
 mds_variables_data = mds_variables_transform_coords.tolist()
